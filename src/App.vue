@@ -4,10 +4,9 @@
       <h1>Frontend Random Topic Generator</h1>
       <my-select></my-select>
       <div>Where to store data in browser?</div>
-      <button>Generate Random Topic</button>
+      <my-button>Generate Random Topic</my-button>
       <div>05:00</div>
-
-      <button>Start Timer</button>
+      <my-button>Start Timer</my-button>
     </div>
   </div>
 </template>
@@ -39,14 +38,6 @@ export default {};
   div {
     margin: 30px 0;
     font-size: 3em;
-  }
-
-  button {
-    padding: 20px 10px;
-    font-weight: 900;
-    background-color: #e3ce0f;
-    color: black;
-    border-radius: 10px;
   }
 }
 </style>
