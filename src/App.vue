@@ -10,14 +10,19 @@
       ></my-select>
       <div>{{ currentTopic }}</div>
       <my-button @click="setTopic">Generate Random Topic</my-button>
-      <div>05:00</div>
-      <my-button @click="fetchTopics">Start Timer</my-button>
+      <div>
+        {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
+          timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
+        }}
+      </div>
+      <my-button v-if="this.timer.start" @click="startTimer">Start Timer</my-button>
+      <my-button v-else @click="stopTimer">Stop Timer</my-button>
     </div>
   </div>
 </template>
 
 // according to the chosen topic => filter the topics // generate random topic after the button
-click // start timer after the button click, do something once it ends and reset it
+click
 
 <script>
 import axios from 'axios';
@@ -25,6 +30,12 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      timer: {
+        minutes: 5,
+        seconds: 0,
+        start: true,
+        interval: '',
+      },
       topics: [],
       filteredTopics: 'NO FILTER',
       currentTopic: '',
@@ -73,6 +84,34 @@ export default {
       console.log('posts ', this.topics['React']);
       console.log('length ', this.topics.length);
       console.log('random ', Math.random() * this.topics.length);
+    },
+    startTimer() {
+      this.timer.start = false;
+      this.timer.interval = setInterval(() => {
+        if (this.timer.seconds === 0 && this.timer.minutes === 0) {
+          clearInterval(x);
+          this.timer = {
+            minutes: 5,
+            seconds: 0,
+            start: true,
+            interval: '',
+          };
+        } else if (this.timer.seconds === 0) {
+          this.timer.minutes--;
+          this.timer.seconds = 59;
+        } else {
+          this.timer.seconds--;
+        }
+      }, 1000);
+    },
+    stopTimer() {
+      clearInterval(this.timer.interval);
+      this.timer = {
+        minutes: 5,
+        seconds: 0,
+        start: true,
+        interval: '',
+      };
     },
     async fetchTopics() {
       try {
