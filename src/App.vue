@@ -80,7 +80,7 @@ export default {
   methods: {
     setTopic() {
       let rnd = Math.floor(Math.random() * this.fetchedTopics.length);
-      this.currentTopic = this.fetchedTopics[rnd].title;
+      this.currentTopic = this.fetchedTopics[rnd];
       this.fetchedTopics.splice(rnd, 1);
     },
     startTimer() {
@@ -108,8 +108,23 @@ export default {
     async fetchTopics() {
       try {
         if (!this.fetchedTopics.length) {
-          const response = await axios.get('https://62a0f78a7b9345bcbe4358a7.mockapi.io/items');
-          this.fetchedTopics = response.data;
+          const response = await axios.get('https://62a0f78a7b9345bcbe4358a7.mockapi.io/questions');
+          // this.fetchedTopics = response.data;
+          // this.fetchedTopics.map((el, index) => console.log(el, index));
+          // console.log(this.fetchedTopics);
+
+          let arr = [];
+
+          response.data.forEach(el => {
+            for (let key in el) {
+              let elem = el[key];
+              for (let key in elem) {
+                arr.push(elem[key]);
+              }
+            }
+          });
+
+          this.fetchedTopics = arr;
         }
         this.stopTimer();
         this.startTimer();
