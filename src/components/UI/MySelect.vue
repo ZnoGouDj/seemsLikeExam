@@ -4,7 +4,7 @@
       <input type="checkbox" id="options-view-button" />
       <div id="select-button" class="brd">
         <div id="selected-value">
-          <span>{{ selectedTopic }}</span>
+          <span>{{ filteredTopics }}</span>
         </div>
         <div id="chevrons">
           <svg
@@ -17,8 +17,13 @@
           </svg>
         </div>
       </div>
-      <div id="options" :value="modelValue">
-        <div class="option" v-for="option in options" :key="option.name">
+      <div id="options">
+        <div
+          class="option"
+          v-for="option in options"
+          :key="option.name"
+          @click="changeFilter(option.id)"
+        >
           <input class="s-c top" type="radio" name="platform" value="codepen" />
           <input class="s-c bottom" type="radio" name="platform" value="codepen" />
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -35,6 +40,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      filteredTopics: 'NO FILTER',
+    };
+  },
   name: 'my-select',
   props: {
     chevrons: {
@@ -45,8 +55,10 @@ export default {
       type: Array,
       default: () => [],
     },
-    selectedTopic: {
-      type: String,
+  },
+  methods: {
+    changeFilter(topic) {
+      this.filteredTopics = this.options[topic].name;
     },
   },
 };
