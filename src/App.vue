@@ -9,20 +9,19 @@
         :filteredTopics="filteredTopics"
       ></my-select>
       <div>{{ currentTopic }}</div>
-      <my-button @click="setTopic">Generate Random Topic</my-button>
+      <my-button @click="fetchTopics">Generate Random Topic</my-button>
       <div>
         {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
           timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
         }}
       </div>
-      <my-button v-if="this.timer.start" @click="startTimer">Start Timer</my-button>
-      <my-button v-else @click="stopTimer">Stop Timer</my-button>
+      <!-- <my-button v-if="this.timer.start" @click="startTimer">Start Timer</my-button>
+      <my-button v-else @click="stopTimer">Stop Timer</my-button> -->
     </div>
   </div>
 </template>
 
-// according to the chosen topic => filter the topics // generate random topic after the button
-click
+// according to the chosen topic => filter the topics
 
 <script>
 import axios from 'axios';
@@ -36,9 +35,9 @@ export default {
         start: true,
         interval: '',
       },
-      topics: [],
+      fetchedTopics: [],
       filteredTopics: 'NO FILTER',
-      currentTopic: '',
+      currentTopic: 'click 👇 to start ',
       chevrons: [
         {
           name: 'up',
@@ -80,22 +79,15 @@ export default {
   },
   methods: {
     setTopic() {
-      let rnd = this.topics[Math.random() * this.topics.length];
-      console.log('posts ', this.topics['React']);
-      console.log('length ', this.topics.length);
-      console.log('random ', Math.random() * this.topics.length);
+      let rnd = Math.floor(Math.random() * this.fetchedTopics.length);
+      this.currentTopic = this.fetchedTopics[rnd].title;
+      this.fetchedTopics.splice(rnd, 1);
     },
     startTimer() {
       this.timer.start = false;
       this.timer.interval = setInterval(() => {
         if (this.timer.seconds === 0 && this.timer.minutes === 0) {
-          clearInterval(x);
-          this.timer = {
-            minutes: 5,
-            seconds: 0,
-            start: true,
-            interval: '',
-          };
+          this.stopTimer();
         } else if (this.timer.seconds === 0) {
           this.timer.minutes--;
           this.timer.seconds = 59;
@@ -115,11 +107,16 @@ export default {
     },
     async fetchTopics() {
       try {
-        const response = await axios.get(
-          'https://62a0f78a7b9345bcbe4358a7.mockapi.io/items?limit=100',
-        );
-        this.topics = response.data;
-      } catch (e) {}
+        if (!this.fetchedTopics.length) {
+          const response = await axios.get('https://62a0f78a7b9345bcbe4358a7.mockapi.io/items');
+          this.fetchedTopics = response.data;
+        }
+        this.stopTimer();
+        this.startTimer();
+        this.setTopic();
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 };
