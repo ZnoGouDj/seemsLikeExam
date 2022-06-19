@@ -59,6 +59,7 @@ export default {
   methods: {
     changeFilter(topic) {
       this.filteredTopics = this.options[topic].name;
+      this.$emit('changeFilter', this.filteredTopics);
     },
   },
 };

@@ -6,7 +6,7 @@
         v-model="filteredTopics"
         :options="topics"
         :chevrons="chevrons"
-        :filteredTopics="filteredTopics"
+        @changeFilter="changeFilter"
       ></my-select>
       <div>{{ currentTopic }}</div>
       <my-button @click="fetchTopics">Generate Random Topic</my-button>
@@ -78,21 +78,26 @@ export default {
     };
   },
   methods: {
+    changeFilter(topic) {
+      this.filteredTopics = topic;
+      console.log(this.filteredTopics);
+    },
     setTopic() {
       let rnd = Math.floor(Math.random() * this.fetchedTopics.length);
       this.currentTopic = this.fetchedTopics[rnd];
       this.fetchedTopics.splice(rnd, 1);
     },
     startTimer() {
-      this.timer.start = false;
-      this.timer.interval = setInterval(() => {
-        if (this.timer.seconds === 0 && this.timer.minutes === 0) {
+      let t = this.timer;
+      t.start = false;
+      t.interval = setInterval(() => {
+        if (t.seconds === 0 && t.minutes === 0) {
           this.stopTimer();
-        } else if (this.timer.seconds === 0) {
-          this.timer.minutes--;
-          this.timer.seconds = 59;
+        } else if (t.seconds === 0) {
+          t.minutes--;
+          t.seconds = 59;
         } else {
-          this.timer.seconds--;
+          t.seconds--;
         }
       }, 1000);
     },
@@ -109,10 +114,6 @@ export default {
       try {
         if (!this.fetchedTopics.length) {
           const response = await axios.get('https://62a0f78a7b9345bcbe4358a7.mockapi.io/questions');
-          // this.fetchedTopics = response.data;
-          // this.fetchedTopics.map((el, index) => console.log(el, index));
-          // console.log(this.fetchedTopics);
-
           let arr = [];
 
           response.data.forEach(el => {
