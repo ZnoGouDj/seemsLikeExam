@@ -42,7 +42,7 @@
 export default {
   data() {
     return {
-      filteredTopics: 'NO FILTER',
+      filteredTopics: 'All',
     };
   },
   name: 'my-select',
@@ -57,9 +57,9 @@ export default {
     },
   },
   methods: {
-    changeFilter(topic) {
-      this.filteredTopics = this.options[topic].name;
-      this.$emit('changeFilter', this.filteredTopics);
+    changeFilter(id) {
+      this.filteredTopics = this.options[id].name;
+      this.$emit('changeFilter', id);
     },
   },
 };

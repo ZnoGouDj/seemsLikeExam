@@ -8,8 +8,11 @@
         :chevrons="chevrons"
         @changeFilter="changeFilter"
       ></my-select>
-      <div>{{ currentTopic }}</div>
-      <my-button @click="fetchTopics">Generate Random Topic</my-button>
+      <h2 v-if="fetchedTopics.length">{{ fetchedTopics.length }} questions left</h2>
+      <div class="currentTopic">{{ currentTopic }}</div>
+      <my-button v-if="!fetchedTopics.length" @click="fetchTopics">Generate Random Topic</my-button>
+      <my-button v-else @click="selectNewTopic">Next topic</my-button>
+
       <div>
         {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
           timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
@@ -20,8 +23,6 @@
     </div>
   </div>
 </template>
-
-// according to the chosen topic => filter the topics
 
 <script>
 import axios from 'axios';
@@ -36,7 +37,7 @@ export default {
         interval: '',
       },
       fetchedTopics: [],
-      filteredTopics: 'NO FILTER',
+      filteredTopics: 'All',
       currentTopic: 'click 👇 to start ',
       chevrons: [
         {
@@ -80,7 +81,7 @@ export default {
   methods: {
     changeFilter(topic) {
       this.filteredTopics = topic;
-      console.log(this.filteredTopics);
+      this.fetchTopics(topic);
     },
     setTopic() {
       let rnd = Math.floor(Math.random() * this.fetchedTopics.length);
@@ -110,22 +111,38 @@ export default {
         interval: '',
       };
     },
+    selectNewTopic() {
+      this.stopTimer();
+      this.startTimer();
+      this.setTopic();
+    },
     async fetchTopics() {
       try {
-        if (!this.fetchedTopics.length) {
-          const response = await axios.get('https://62a0f78a7b9345bcbe4358a7.mockapi.io/questions');
-          let arr = [];
+        const response = await axios.get('https://62a0f78a7b9345bcbe4358a7.mockapi.io/questions');
+        let arr = [];
 
-          response.data.forEach(el => {
+        response.data.forEach(el => {
+          for (let key in el) {
+            let elem = el[key];
+            arr.push(elem);
+          }
+        });
+
+        if (this.filteredTopics === 'All') {
+          let allTopics = [];
+          arr.forEach(el => {
             for (let key in el) {
-              let elem = el[key];
-              for (let key in elem) {
-                arr.push(elem[key]);
-              }
+              allTopics.push(el[key]);
             }
           });
-
-          this.fetchedTopics = arr;
+          this.fetchedTopics = allTopics;
+        } else {
+          let topicFilter = [];
+          let el = arr[this.filteredTopics];
+          for (let key in el) {
+            topicFilter.push(el[key]);
+          }
+          this.fetchedTopics = topicFilter;
         }
         this.stopTimer();
         this.startTimer();
@@ -161,6 +178,16 @@ export default {
   div {
     margin: 30px 0;
     font-size: 3em;
+  }
+
+  h2 {
+    margin-top: 30px;
+  }
+
+  .currentTopic {
+    padding: 80px 100px;
+    border-radius: 10px;
+    background-color: black;
   }
 }
 </style>
