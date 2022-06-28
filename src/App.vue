@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="main">
-      <h1>Frontend Random Topic Generator</h1>
+      <h1>Interview Random Topic Generator</h1>
       <my-select
         v-model="filteredTopics"
         :options="topics"
@@ -10,7 +10,9 @@
       ></my-select>
       <h2 v-if="fetchedTopics.length">{{ fetchedTopics.length }} questions left</h2>
       <div class="currentTopic">{{ currentTopic }}</div>
-      <my-button v-if="!fetchedTopics.length" @click="fetchTopics">Generate Random Topic</my-button>
+      <!-- <my-button v-if="!fetchedTopics.length" @click="fetchTopics">Generate Random Topic</my-button>
+      <my-button v-else @click="selectNewTopic">Next topic</my-button> -->
+      <my-button v-if="!isStarted" @click="fetchTopics">Generate Random Topic</my-button>
       <my-button v-else @click="selectNewTopic">Next topic</my-button>
 
       <div>
@@ -37,8 +39,10 @@ export default {
         interval: '',
       },
       fetchedTopics: [],
+      currentTopics: [],
       filteredTopics: 'All',
       currentTopic: 'click 👇 to start ',
+      isStarted: false,
       chevrons: [
         {
           name: 'up',
@@ -75,17 +79,26 @@ export default {
           name: 'REDUX',
           path: 'M228.7 309.7C282 288.6 320 236.8 320 176c0-79.41-64.59-144-144-144H32c-17.67 0-32 14.33-32 32v384c0 17.67 14.33 32 32 32s32-14.33 32-32v-128h93.43l104.5 146.6c6.25 8.75 16.09 13.42 26.09 13.42c6.422 0 12.91-1.922 18.55-5.938c14.39-10.27 17.73-30.25 7.484-44.64L228.7 309.7zM64 96.01h112c44.11 0 80 35.89 80 80s-35.89 79.1-80 79.1H64V96.01z',
         },
+        {
+          id: 5,
+          name: 'TYPESCRIPT',
+          path: 'M384 64.01c0 17.67-14.33 32-32 32h-128v352c0 17.67-14.33 31.99-32 31.99s-32-14.32-32-31.99v-352H32c-17.67 0-32-14.33-32-32s14.33-32 32-32h320C369.7 32.01 384 46.34 384 64.01z',
+        },
       ],
     };
   },
   methods: {
     changeFilter(topic) {
       this.filteredTopics = topic;
-      this.fetchTopics(topic);
+      this.stopTimer();
+      // this.currentTopics = this.fetchedTopics.filter(el => el)
+      this.fetchTopics();
+      this.isStarted = false;
     },
     setTopic() {
       let rnd = Math.floor(Math.random() * this.fetchedTopics.length);
       this.currentTopic = this.fetchedTopics[rnd];
+      console.log(this.fetchedTopics[0]);
       this.fetchedTopics.splice(rnd, 1);
     },
     startTimer() {
@@ -129,13 +142,19 @@ export default {
         });
 
         if (this.filteredTopics === 'All') {
-          let allTopics = [];
-          arr.forEach(el => {
+          let allTopics = {};
+
+          arr.forEach((el, index) => {
             for (let key in el) {
-              allTopics.push(el[key]);
+              if (!allTopics[index]) {
+                allTopics[index] = [el[key]];
+              } else {
+                allTopics[index].push(el[key]);
+              }
             }
           });
           this.fetchedTopics = allTopics;
+          this.startTimer();
         } else {
           let topicFilter = [];
           let el = arr[this.filteredTopics];
@@ -144,9 +163,9 @@ export default {
           }
           this.fetchedTopics = topicFilter;
         }
-        this.stopTimer();
-        this.startTimer();
+
         this.setTopic();
+        this.isStarted = true;
       } catch (e) {
         console.log(e);
       }

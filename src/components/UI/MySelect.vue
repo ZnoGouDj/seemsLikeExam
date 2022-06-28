@@ -43,6 +43,7 @@ export default {
   data() {
     return {
       filteredTopics: 'All',
+      hidden: true, //! to make it hide after click
     };
   },
   name: 'my-select',
@@ -213,7 +214,7 @@ body {
   position: absolute;
   left: 14px;
   padding: 0;
-  display: none;
+  display: none; //!
 }
 
 #options-view-button:checked ~ #options .option svg {
@@ -222,7 +223,7 @@ body {
 }
 
 .label {
-  display: none;
+  display: none; //!
   padding: 0;
   margin-left: 27px;
 }
