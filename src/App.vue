@@ -1,17 +1,10 @@
 <template>
   <div class="container">
     <div class="main">
+      <select-buttons @onChange="changeFilter"></select-buttons>
       <h1>Interview Random Topic Generator</h1>
-      <my-select
-        v-model="filteredTopics"
-        :options="topics"
-        :chevrons="chevrons"
-        @changeFilter="changeFilter"
-      ></my-select>
       <h2 v-if="fetchedTopics.length">{{ fetchedTopics.length }} questions left</h2>
       <div class="currentTopic">{{ currentTopic }}</div>
-      <!-- <my-button v-if="!fetchedTopics.length" @click="fetchTopics">Generate Random Topic</my-button>
-      <my-button v-else @click="selectNewTopic">Next topic</my-button> -->
       <my-button v-if="!isStarted" @click="fetchTopics">Generate Random Topic</my-button>
       <my-button v-else @click="selectNewTopic">Next topic</my-button>
 
@@ -20,8 +13,6 @@
           timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
         }}
       </div>
-      <!-- <my-button v-if="this.timer.start" @click="startTimer">Start Timer</my-button>
-      <my-button v-else @click="stopTimer">Stop Timer</my-button> -->
     </div>
   </div>
 </template>
@@ -43,6 +34,7 @@ export default {
       filteredTopics: 'All',
       currentTopic: 'click 👇 to start ',
       isStarted: false,
+
       chevrons: [
         {
           name: 'up',
@@ -89,6 +81,7 @@ export default {
   },
   methods: {
     changeFilter(topic) {
+      console.log(topic);
       this.filteredTopics = topic;
       this.stopTimer();
       // this.currentTopics = this.fetchedTopics.filter(el => el)
@@ -98,7 +91,7 @@ export default {
     setTopic() {
       let rnd = Math.floor(Math.random() * this.fetchedTopics.length);
       this.currentTopic = this.fetchedTopics[rnd];
-      console.log(this.fetchedTopics[0]);
+      console.log(this.fetchedTopics[0]); //? and fix here
       this.fetchedTopics.splice(rnd, 1);
     },
     startTimer() {
@@ -152,7 +145,7 @@ export default {
                 allTopics[index].push(el[key]);
               }
             }
-          });
+          }); //! it works here
           this.fetchedTopics = allTopics;
           this.startTimer();
         } else {
@@ -162,7 +155,7 @@ export default {
             topicFilter.push(el[key]);
           }
           this.fetchedTopics = topicFilter;
-        }
+        } //? fix here
 
         this.setTopic();
         this.isStarted = true;

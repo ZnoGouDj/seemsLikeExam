@@ -1,4 +1,4 @@
-import MySelect from '@/components/UI/MySelect';
 import MyButton from '@/components/UI/MyButton';
+import SelectButtons from '@/components/UI/SelectButtons';
 
-export default [MySelect, MyButton];
+export default [MyButton, SelectButtons];
