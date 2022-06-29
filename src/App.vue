@@ -38,7 +38,7 @@ export default {
     };
   },
   methods: {
-    changeFilter(topic) {
+    changeFilter(topic = 'all') {
       console.log(topic);
       // this.filteredTopics = topic;
       // this.stopTimer();

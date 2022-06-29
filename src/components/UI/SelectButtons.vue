@@ -1,10 +1,10 @@
 <template>
   <div class="btn-container">
+    <div :class="{ transparentBlock: isTopicSelected }" @click="selectAll()"></div>
     <button
       v-for="image in images"
       :key="image.src"
-      @click="onChange(image.alt)"
-      v-click-outside="onClickOutside"
+      @click.stop="onChange(image.alt)"
       :class="{ active: image.isActive, transparent: image.isActive === null }"
     >
       <img :src="image.src" :alt="image.alt" />
@@ -29,6 +29,7 @@ export default {
         { src: redux, alt: 'redux', isActive: null },
         { src: ts, alt: 'typescript', isActive: null },
       ],
+      isTopicSelected: false,
     };
   },
   name: 'select-buttons',
@@ -38,12 +39,14 @@ export default {
       this.images.forEach(el => (el.isActive = false));
       current.isActive = true;
       this.$emit('onChange', name);
+      this.isTopicSelected = true;
     },
-    onClickOutside() {
+    selectAll() {
+      this.$emit('onChange');
       this.images.forEach(el => (el.isActive = null));
+      this.isTopicSelected = false;
     },
   },
-  directives: {},
 };
 </script>
 
@@ -64,6 +67,7 @@ button {
   background: black;
   margin: 0 10px;
   opacity: 0.5;
+  cursor: pointer;
 
   &:hover {
     transform: scale(1.1);
@@ -82,5 +86,15 @@ img {
   height: 70px;
   background: white;
   border-radius: 8px;
+}
+
+.transparentBlock {
+  position: fixed;
+  margin-top: 75px;
+  width: 500px;
+  height: 330px;
+  /* background: red; */
+  opacity: 0;
+  z-index: 999;
 }
 </style>
