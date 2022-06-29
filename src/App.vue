@@ -1,13 +1,11 @@
 <template>
-  <div :class="{ paddingTop: isRequired }">
+  <div class="regularPaddingTop" :class="{ paddingTop: isRequired }">
     <div class="main">
       <select-buttons @onChange="changeFilter"></select-buttons>
       <h1>Interview Random Topic Generator</h1>
-      <h2 v-if="fetchedTopics.length">{{ fetchedTopics.length }} questions left</h2>
+      <h2 v-if="currentTopics.length">{{ currentTopics.length }} topics left</h2>
       <div class="currentTopic">{{ currentTopic }}</div>
-      <my-button v-if="!isStarted" @click="fetchTopics">Generate Random Topic</my-button>
-      <my-button v-else @click="selectNewTopic">Next topic</my-button>
-
+      <my-button v-if="!isStarted" @click="setTopic">Generate Random Topic</my-button>
       <div>
         {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
           timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
@@ -29,28 +27,17 @@ export default {
         start: true,
         interval: '',
       },
-      isRequired: window.innerHeight > 500,
+      isRequired: window.innerHeight > 800,
       fetchedTopics: [],
       currentTopics: [],
-      filteredTopics: 'All',
       currentTopic: 'click 👇 to start ',
       isStarted: false,
     };
   },
+  mounted() {
+    this.fetchTopics();
+  },
   methods: {
-    changeFilter(topic = 'all') {
-      console.log(topic);
-      // this.filteredTopics = topic;
-      // this.stopTimer();
-      // this.fetchTopics();
-      // this.isStarted = false;
-    },
-    setTopic() {
-      let rnd = Math.floor(Math.random() * this.fetchedTopics.length);
-      this.currentTopic = this.fetchedTopics[rnd];
-      console.log(this.fetchedTopics[0]); //? and fix here
-      this.fetchedTopics.splice(rnd, 1);
-    },
     startTimer() {
       let t = this.timer;
       t.start = false;
@@ -74,51 +61,52 @@ export default {
         interval: '',
       };
     },
-    selectNewTopic() {
-      this.stopTimer();
-      this.startTimer();
-      this.setTopic();
-    },
     async fetchTopics() {
       try {
         const response = await axios.get('https://62a0f78a7b9345bcbe4358a7.mockapi.io/questions');
-        let arr = [];
+        let obj = {};
 
-        response.data.forEach(el => {
-          for (let key in el) {
-            let elem = el[key];
-            arr.push(elem);
-          }
-        });
+        for (let key in response.data[0]) {
+          let elem = response.data[0][key];
+          obj[key] = elem;
+        }
 
-        if (this.filteredTopics === 'All') {
-          let allTopics = {};
-
-          arr.forEach((el, index) => {
-            for (let key in el) {
-              if (!allTopics[index]) {
-                allTopics[index] = [el[key]];
-              } else {
-                allTopics[index].push(el[key]);
-              }
-            }
-          }); //! it works here
-          this.fetchedTopics = allTopics;
-          this.startTimer();
-        } else {
-          let topicFilter = [];
-          let el = arr[this.filteredTopics];
-          for (let key in el) {
-            topicFilter.push(el[key]);
-          }
-          this.fetchedTopics = topicFilter;
-        } //? fix here
-
-        this.setTopic();
-        this.isStarted = true;
+        this.fetchedTopics = obj;
+        for (let key in this.fetchedTopics) {
+          this.fetchedTopics[key].forEach(el => {
+            this.currentTopics.push(el);
+          });
+        }
       } catch (e) {
         console.log(e);
       }
+    },
+    setTopic() {
+      if (!this.currentTopics.length) {
+        this.currentTopic = 'No more topics available.';
+        this.stopTimer();
+      } else {
+        let rnd = Math.floor(Math.random() * this.currentTopics.length);
+        this.currentTopic = this.currentTopics[rnd];
+        this.currentTopics.splice(rnd, 1);
+        this.stopTimer();
+        this.startTimer();
+      }
+    },
+    changeFilter(topic) {
+      if (!topic) {
+        this.currentTopics = [];
+        for (let key in this.fetchedTopics) {
+          this.fetchedTopics[key].forEach(el => {
+            this.currentTopics.push(el);
+          });
+        }
+        this.currentTopic = 'ALL the topics';
+      } else {
+        this.currentTopics = this.fetchedTopics[topic];
+        this.currentTopic = [topic] + ' topics';
+      }
+      this.stopTimer();
     },
   },
 };
@@ -127,6 +115,10 @@ export default {
 <style lang="scss" scoped>
 * {
   color: #e3ce0f;
+}
+
+.regularPaddingTop {
+  padding-top: 5vh;
 }
 
 .paddingTop {

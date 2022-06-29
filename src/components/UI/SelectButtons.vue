@@ -23,11 +23,11 @@ export default {
   data() {
     return {
       images: [
-        { src: html, alt: 'html/css', isActive: null },
-        { src: js, alt: 'javascript', isActive: null },
-        { src: react, alt: 'react', isActive: null },
-        { src: redux, alt: 'redux', isActive: null },
-        { src: ts, alt: 'typescript', isActive: null },
+        { src: html, alt: 'HTML/CSS', isActive: null },
+        { src: js, alt: 'JAVASCRIPT', isActive: null },
+        { src: react, alt: 'REACT', isActive: null },
+        { src: redux, alt: 'REDUX', isActive: null },
+        { src: ts, alt: 'TYPESCRIPT', isActive: null },
       ],
       isTopicSelected: false,
     };
@@ -89,11 +89,10 @@ img {
 }
 
 .transparentBlock {
-  position: fixed;
+  position: absolute;
   margin-top: 75px;
   width: 500px;
   height: 330px;
-  /* background: red; */
   opacity: 0;
   z-index: 999;
 }
