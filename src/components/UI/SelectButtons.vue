@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import common from '@/assets/COMMON.png';
 import html from '@/assets/HTML&CSS.png';
 import js from '@/assets/JS.png';
 import react from '@/assets/REACT.png';
@@ -23,6 +24,7 @@ export default {
   data() {
     return {
       images: [
+        { src: common, alt: 'COMMON', isActive: null },
         { src: html, alt: 'HTML/CSS', isActive: null },
         { src: js, alt: 'JAVASCRIPT', isActive: null },
         { src: react, alt: 'REACT', isActive: null },
