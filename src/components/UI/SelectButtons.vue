@@ -4,7 +4,8 @@
       v-for="image in images"
       :key="image.src"
       @click="onChange(image.alt)"
-      :class="{ active: image.isActive }"
+      v-click-outside="onClickOutside"
+      :class="{ active: image.isActive, transparent: image.isActive === null }"
     >
       <img :src="image.src" :alt="image.alt" />
     </button>
@@ -22,11 +23,11 @@ export default {
   data() {
     return {
       images: [
-        { src: html, alt: 'html/css', isActive: false },
-        { src: js, alt: 'javascript', isActive: false },
-        { src: react, alt: 'react', isActive: false },
-        { src: redux, alt: 'redux', isActive: false },
-        { src: ts, alt: 'typescript', isActive: false },
+        { src: html, alt: 'html/css', isActive: null },
+        { src: js, alt: 'javascript', isActive: null },
+        { src: react, alt: 'react', isActive: null },
+        { src: redux, alt: 'redux', isActive: null },
+        { src: ts, alt: 'typescript', isActive: null },
       ],
     };
   },
@@ -38,13 +39,21 @@ export default {
       current.isActive = true;
       this.$emit('onChange', name);
     },
+    onClickOutside() {
+      this.images.forEach(el => (el.isActive = null));
+    },
   },
+  directives: {},
 };
 </script>
 
 <style lang="scss" scoped>
 .btn-container {
   display: flex;
+}
+
+.transparent {
+  opacity: 1;
 }
 
 button {
@@ -54,14 +63,17 @@ button {
   height: 74px;
   background: black;
   margin: 0 10px;
+  opacity: 0.5;
 
   &:hover {
     transform: scale(1.1);
+    opacity: 1;
   }
 
   &.active {
-    transform: scale(1.5);
+    transform: scale(1.2);
     box-shadow: 0px 0px 8px white;
+    opacity: 1;
   }
 }
 
