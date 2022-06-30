@@ -1,17 +1,20 @@
 <template>
-  <div class="regularPaddingTop" :class="{ paddingTop: isRequired }">
-    <div class="main">
-      <select-buttons @onChange="changeFilter"></select-buttons>
-      <h1>Interview Random Topic Generator</h1>
-      <h2 v-if="currentTopics.length">{{ currentTopics.length }} topics left</h2>
-      <div class="currentTopic">
-        <p>{{ currentTopic }}</p>
-      </div>
-      <my-button v-if="!isStarted" @click="setTopic">Generate Random Topic</my-button>
-      <div>
-        {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
-          timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
-        }}
+  <div class="testContainer" @click="changeFilter()">
+    <div class="regularPaddingTop" :class="{ paddingTop: isRequired }">
+      <div class="main" @click.stop="workaround">
+        <select-buttons @onChange="changeFilter" :isSelected="isTopicSelected"></select-buttons>
+        <h1>Interview Random Topic Generator</h1>
+        <h2 v-if="currentTopics.length">{{ currentTopics.length }} left</h2>
+        <h2 v-else>Loading...</h2>
+        <div class="currentTopic">
+          <p>{{ currentTopic }}</p>
+        </div>
+        <my-button v-if="!isStarted" @click.stop="setTopic">Generate Random Topic</my-button>
+        <div>
+          {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
+            timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
+          }}
+        </div>
       </div>
     </div>
   </div>
@@ -34,6 +37,7 @@ export default {
       currentTopics: [],
       currentTopic: 'click 👇 to start ',
       isStarted: false,
+      isTopicSelected: false,
     };
   },
   mounted() {
@@ -104,11 +108,16 @@ export default {
           });
         }
         this.currentTopic = 'ALL the topics';
+        this.isTopicSelected = false;
       } else {
         this.currentTopics = this.fetchedTopics[topic];
         this.currentTopic = [topic] + ' topics';
+        this.isTopicSelected = true;
       }
       this.stopTimer();
+    },
+    workaround() {
+      console.log('workaround works');
     },
   },
 };
@@ -121,6 +130,14 @@ export default {
 
 .regularPaddingTop {
   padding-top: 5vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.testContainer {
+  width: 100vw;
 }
 
 .paddingTop {
@@ -132,7 +149,8 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 30px 20px;
+  /* padding: 30px 20px; */
+  max-width: 700px;
 
   div {
     margin: 30px 0;

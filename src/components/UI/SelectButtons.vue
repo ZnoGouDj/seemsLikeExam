@@ -1,6 +1,5 @@
 <template>
   <div class="btn-container">
-    <div :class="{ transparentBlock: isTopicSelected }" @click="selectAll()"></div>
     <button
       v-for="image in images"
       :key="image.src"
@@ -43,10 +42,17 @@ export default {
       this.$emit('onChange', name);
       this.isTopicSelected = true;
     },
-    selectAll() {
-      this.$emit('onChange');
-      this.images.forEach(el => (el.isActive = null));
-      this.isTopicSelected = false;
+  },
+  props: {
+    isSelected: {
+      type: Boolean,
+    },
+  },
+  watch: {
+    isSelected(value) {
+      if (!value) {
+        this.images.forEach(el => (el.isActive = null));
+      }
     },
   },
 };
