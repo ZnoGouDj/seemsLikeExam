@@ -4,7 +4,9 @@
       <select-buttons @onChange="changeFilter"></select-buttons>
       <h1>Interview Random Topic Generator</h1>
       <h2 v-if="currentTopics.length">{{ currentTopics.length }} topics left</h2>
-      <div class="currentTopic">{{ currentTopic }}</div>
+      <div class="currentTopic">
+        <p>{{ currentTopic }}</p>
+      </div>
       <my-button v-if="!isStarted" @click="setTopic">Generate Random Topic</my-button>
       <div>
         {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
@@ -142,9 +144,16 @@ export default {
   }
 
   .currentTopic {
-    padding: 80px 100px;
+    width: 590px;
+    height: 100px;
+    padding: 80px 5px;
     border-radius: 10px;
     background-color: black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 }
 </style>
