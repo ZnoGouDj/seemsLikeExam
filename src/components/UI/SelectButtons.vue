@@ -98,8 +98,16 @@ img {
 
 @media (max-width: 600px) {
   .btn-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    button {
+      width: 60px;
+      height: 60px;
+      margin: 3px;
+    }
+  }
+
+  img {
+    width: 56px;
+    height: 56px;
   }
 }
 </style>

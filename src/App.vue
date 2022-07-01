@@ -35,7 +35,7 @@ export default {
       },
       fetchedTopics: [],
       currentTopics: [],
-      currentTopic: 'click 👇 to start ',
+      currentTopic: 'click 👇 to start',
       topicsAmount: 0,
       isStarted: false,
       isTopicSelected: false,
@@ -102,18 +102,20 @@ export default {
       }
     },
     changeFilter(topic) {
-      if (!topic) {
+      console.log(topic);
+      console.log(this.currentTopic);
+      if (!topic || this.currentTopic.includes(topic)) {
         this.currentTopics = [];
         for (let key in this.fetchedTopics) {
           this.fetchedTopics[key].forEach(el => {
             this.currentTopics.push(el);
           });
         }
-        this.currentTopic = 'ALL the topics';
+        this.currentTopic = 'ALL THE TOPICS';
         this.isTopicSelected = false;
       } else {
         this.currentTopics = this.fetchedTopics[topic];
-        this.currentTopic = [topic] + ' topics';
+        this.currentTopic = [topic] + ' TOPICS';
         this.isTopicSelected = true;
       }
       this.topicsAmount = 0;
@@ -204,7 +206,7 @@ export default {
 
 @media (max-width: 600px) {
   .main-container {
-    padding-top: 5vh;
+    padding: 0;
   }
 
   .main {
