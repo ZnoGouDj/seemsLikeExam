@@ -1,12 +1,12 @@
 <template>
-  <div class="testContainer" @click="changeFilter()">
-    <div class="regularPaddingTop" :class="{ paddingTop: isRequired }">
+  <div class="pop-up-block" @click="changeFilter()">
+    <div class="main-container">
       <div class="main" @click.stop="workaround">
-        <select-buttons @onChange="changeFilter" :isSelected="isTopicSelected"></select-buttons>
         <h1>Interview Random Topic Generator</h1>
         <h2 v-if="currentTopics.length">{{ currentTopics.length }} left</h2>
         <h2 v-else>Loading...</h2>
-        <div class="currentTopic">
+        <select-buttons @onChange="changeFilter" :isSelected="isTopicSelected"></select-buttons>
+        <div class="current-topic">
           <p>{{ currentTopic }}</p>
         </div>
         <my-button v-if="!isStarted" @click.stop="setTopic">Generate Random Topic</my-button>
@@ -32,7 +32,6 @@ export default {
         start: true,
         interval: '',
       },
-      isRequired: window.innerHeight > 800,
       fetchedTopics: [],
       currentTopics: [],
       currentTopic: 'click 👇 to start ',
@@ -128,7 +127,7 @@ export default {
   color: #e3ce0f;
 }
 
-.regularPaddingTop {
+.main-container {
   padding-top: 5vh;
   display: flex;
   flex-direction: column;
@@ -136,12 +135,8 @@ export default {
   align-items: center;
 }
 
-.testContainer {
+.pop-up-block {
   width: 100vw;
-}
-
-.paddingTop {
-  padding-top: calc(100vh / 5);
 }
 
 .main {
@@ -150,18 +145,18 @@ export default {
   justify-content: center;
   align-items: center;
   /* padding: 30px 20px; */
-  max-width: 700px;
+  width: 700px;
 
-  div {
+  div:not(:first-of-type) {
     margin: 30px 0;
     font-size: 3em;
   }
 
   h2 {
-    margin-top: 30px;
+    margin: 30px 0;
   }
 
-  .currentTopic {
+  .current-topic {
     width: 590px;
     height: 100px;
     padding: 80px 5px;
@@ -172,6 +167,27 @@ export default {
     justify-content: center;
     align-items: center;
     text-align: center;
+  }
+}
+
+@media (min-width: 1100px) {
+  .main-container {
+    padding-top: calc(100vh / 5);
+  }
+}
+
+@media (max-width: 600px) {
+  .main-container {
+    padding-top: 5vh;
+  }
+
+  .main {
+    width: 414px;
+    text-align: center;
+
+    .current-topic {
+      width: 400px;
+    }
   }
 }
 </style>

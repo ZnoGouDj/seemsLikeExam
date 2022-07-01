@@ -73,7 +73,7 @@ button {
   width: 74px;
   height: 74px;
   background: black;
-  margin: 0 10px;
+  margin: 10px;
   opacity: 0.5;
   cursor: pointer;
 
@@ -96,12 +96,10 @@ img {
   border-radius: 8px;
 }
 
-.transparentBlock {
-  position: absolute;
-  margin-top: 75px;
-  width: 500px;
-  height: 330px;
-  opacity: 0;
-  z-index: 999;
+@media (max-width: 600px) {
+  .btn-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 </style>
