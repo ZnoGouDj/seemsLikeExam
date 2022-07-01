@@ -3,18 +3,19 @@
     <div class="main-container">
       <div class="main" @click.stop="workaround">
         <h1>Interview Random Topic Generator</h1>
-        <h2 v-if="currentTopics.length">{{ currentTopics.length }} left</h2>
-        <h2 v-else>Loading...</h2>
         <select-buttons @onChange="changeFilter" :isSelected="isTopicSelected"></select-buttons>
         <div class="current-topic">
+          <div class="topics-amount" v-if="topicsAmount && currentTopics.length">
+            {{ topicsAmount }}/{{ currentTopics.length + topicsAmount }}
+          </div>
           <p>{{ currentTopic }}</p>
+          <div class="timer" v-if="topicsAmount && currentTopics.length">
+            {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
+              timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
+            }}
+          </div>
         </div>
         <my-button v-if="!isStarted" @click.stop="setTopic">Generate Random Topic</my-button>
-        <div>
-          {{ timer.minutes < 10 ? '0' + timer.minutes : timer.minutes }}:{{
-            timer.seconds < 10 ? '0' + timer.seconds : timer.seconds
-          }}
-        </div>
       </div>
     </div>
   </div>
@@ -35,6 +36,7 @@ export default {
       fetchedTopics: [],
       currentTopics: [],
       currentTopic: 'click 👇 to start ',
+      topicsAmount: 0,
       isStarted: false,
       isTopicSelected: false,
     };
@@ -96,6 +98,7 @@ export default {
         this.currentTopics.splice(rnd, 1);
         this.stopTimer();
         this.startTimer();
+        this.topicsAmount++;
       }
     },
     changeFilter(topic) {
@@ -113,6 +116,7 @@ export default {
         this.currentTopic = [topic] + ' topics';
         this.isTopicSelected = true;
       }
+      this.topicsAmount = 0;
       this.stopTimer();
     },
     workaround() {
@@ -144,15 +148,14 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* padding: 30px 20px; */
   width: 700px;
 
-  div:not(:first-of-type) {
+  & > div:not(:first-of-type) {
     margin: 30px 0;
     font-size: 3em;
   }
 
-  h2 {
+  h1 {
     margin: 30px 0;
   }
 
@@ -167,12 +170,35 @@ export default {
     justify-content: center;
     align-items: center;
     text-align: center;
+    position: relative;
+
+    & > div {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .topics-amount {
+      top: 5px;
+      right: 10px;
+    }
+
+    .timer {
+      bottom: 5px;
+      left: 10px;
+    }
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1500px) {
   .main-container {
     padding-top: calc(100vh / 5);
+  }
+}
+
+@media (min-width: 1000px) {
+  .main-container {
+    padding-top: 10vh;
   }
 }
 
